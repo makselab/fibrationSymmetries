@@ -1,6 +1,6 @@
 Package: fibrationSymmetries
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Functions to work with fibration symmetries
+Version: 1.0
 Authors@R: 
     person(given = "Ian",
            family = "Leifer",
@@ -8,8 +8,7 @@ Authors@R:
            email = "ianleifer93@gmail.com",
            comment = structure("https://orcid.org/0000-0002-8828-8111", .Names = "ORCID"))
 Description: Functions to work with fibration symmetries
-License: `use_mit_license()`, `use_gpl3_license()` or friends to
-    pick a license
+License: use_gpl3_license()
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
