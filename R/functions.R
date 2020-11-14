@@ -1,13 +1,23 @@
 #' Find balanced coloring using Kamei algorithm
 #'
-#' This function find a balanced coloring
+#' This function finds a balanced coloring
 #'
 #' @param raw_edges list of edges
-#' @return Node table
+#' @return Data frame with 2 columns: Name (for the node name) and Color (for )
 #' @export
 get.balanced.coloring.Kamei <- function(raw_edges = NA, file = NA, sep = "\t", header = F, directed = F, weighted = F, look.for.no.input.nodes = T) {
+  if(!is.na(file)) {
+    if(is.na(raw_edges)) {
+      raw_edges <- read.table(file, sep = " ", header = F, stringsAsFactors = F, quote = "")
+      weighted = as.logical(ncol(raw_edges) - 2)
+    } else {
+      stop("No file or edgelist specified, please see usage manual")
+    }
+  } else {
+    raw_edges[] <- apply(raw_edges, 2, as.character)
+  }
+
   Rcpp::sourceCpp("kamei_coloring.cpp")
-  raw_edges[] <- apply(raw_edges, 2, as.character)
   graph = igraph::graph_from_edgelist(as.matrix(raw_edges[, 1:2]), directed = directed)
 
   integer.nodes = igraph::as_data_frame(graph, what = "vertices")
