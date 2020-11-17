@@ -2,8 +2,8 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-int calculateVectors(std::vector<int> nodeColors,
-                      std::vector< std::vector<int> > &vectors,
+std::vector <std::vector<int>> calculateVectors(std::vector<int> nodeColors,
+                      std::vector< std::vector<int> > vectors,
 		      std::vector< std::vector<int> > &connections,
 		      bool directed,
 		      bool weighted,
@@ -26,7 +26,7 @@ int calculateVectors(std::vector<int> nodeColors,
 		}
 		vectors[connections[i][1]][pos]++;
 	}
-	return(0);
+	return(vectors);
 }
 
 // returns new number of colors
@@ -94,7 +94,7 @@ std::vector<int> getBalancedColoring(std::vector<int> nodeColors, std::vector<bo
 			vectors[i].resize(numberOfColors * (weighted?numberOfWeights:1));
 		}
 
-		calculateVectors(nodeColors, vectors, connections, directed, weighted, numberOfWeights);
+		vectors = calculateVectors(nodeColors, vectors, connections, directed, weighted, numberOfWeights);
 		int nOC = classifyNodes(vectors, nodeColors, directed, noInputNodes);
 
 		if(nOC == numberOfColors) {break;}
