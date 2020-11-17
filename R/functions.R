@@ -32,7 +32,6 @@ get.balanced.coloring.Kamei <- function(raw_edges = NA, file = NA, sep = "\t", h
   raw_edges = get.raw.edges(raw_edges = raw_edges, file = file, sep = sep, header = header)
   weighted = as.logical(ncol(raw_edges) - 2)
 
-  # Rcpp::sourceCpp("/home/ian/Dropbox (City College)/Research/fibrationSymmetries/R/kamei_coloring.cpp")
   graph = igraph::graph_from_edgelist(as.matrix(raw_edges[, 1:2]), directed = directed)
 
   integer.nodes = igraph::as_data_frame(graph, what = "vertices")
