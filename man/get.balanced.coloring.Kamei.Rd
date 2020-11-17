@@ -10,12 +10,21 @@ get.balanced.coloring.Kamei(
   sep = "\\t",
   header = F,
   directed = F,
-  weighted = F,
   look.for.no.input.nodes = T
 )
 }
 \arguments{
 \item{raw_edges}{list of edges}
+
+\item{file}{list of edges}
+
+\item{sep}{list of edges}
+
+\item{header}{list of edges}
+
+\item{directed}{list of edges}
+
+\item{look.for.no.input.nodes}{list of edges}
 }
 \value{
 Data frame with 2 columns: Name (for the node name) and Color (for )
