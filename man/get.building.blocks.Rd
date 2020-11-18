@@ -7,7 +7,7 @@
 get.building.blocks(
   raw_edges = NA,
   file = NA,
-  sep = "\\t",
+  sep = " ",
   header = F,
   outputFolder = NA,
   csv = F,
@@ -20,7 +20,7 @@ get.building.blocks(
 
 \item{file}{File from which edgelist can be read (specify only one file or raw_edges)}
 
-\item{sep}{Field separator character used in read.table. If missing is set at "\\t".}
+\item{sep}{Field separator character used in read.table. If missing is set at " ".}
 
 \item{header}{A logical value indicating whether "file" contains the names of the variables as its first line. If missing is set at F}
 

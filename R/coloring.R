@@ -1,11 +1,11 @@
-get.raw.edges <- function(raw_edges = NA, file = NA, sep = "\t", header = F) {
+get.raw.edges <- function(raw_edges, file, sep, header) {
   if(!is.na(file) & !is.na(raw_edges)) {
     stop("Both raw_edges and file are specified, specify only one")
   }
 
   if(!is.na(file)) {
     if(is.na(raw_edges)) {
-      raw_edges <- read.table(file, sep = " ", header = F, stringsAsFactors = F, quote = "")
+      raw_edges <- read.table(file = file, sep = sep, header = header, stringsAsFactors = F, quote = "")
     } else {
       stop("No file or edgelist specified, please see manual for usage")
     }
@@ -22,13 +22,13 @@ get.raw.edges <- function(raw_edges = NA, file = NA, sep = "\t", header = F) {
 #'
 #' @param raw_edges List of edges
 #' @param file File from which edgelist can be read (specify only one file or raw_edges)
-#' @param sep Field separator character used in read.table. If missing is set at "\\t".
+#' @param sep Field separator character used in read.table. If missing is set at " ".
 #' @param header A logical value indicating whether "file" contains the names of the variables as its first line. If missing is set at F
 #' @param directed A logical value indicating whether the network is directed or not. If missing is set at F
 #' @param look.for.no.input.nodes A logical value indicating whether colors of nodes with no inputs need to be fixed. If missing is set at T
 #' @return Data frame with 2 columns: Name (for the node name) and Color (for the node color id)
 #' @export
-get.balanced.coloring.Kamei <- function(raw_edges = NA, file = NA, sep = "\t", header = F, directed = F, look.for.no.input.nodes = T) {
+get.balanced.coloring.Kamei <- function(raw_edges = NA, file = NA, sep = " ", header = F, directed = F, look.for.no.input.nodes = T) {
   ####################################
   # Preprocessing of nodes and edges #
   ####################################
@@ -81,12 +81,12 @@ get.balanced.coloring.Kamei <- function(raw_edges = NA, file = NA, sep = "\t", h
 #' @param nodes dataframe with 2 columns: Name, Color.
 #' @param raw_edges List of edges
 #' @param file File from which edgelist can be read (specify only one file or raw_edges)
-#' @param sep Field separator character used in read.table. If missing is set at "\\t".
+#' @param sep Field separator character used in read.table. If missing is set at " ".
 #' @param header A logical value indicating whether "file" contains the names of the variables as its first line. If missing is set at F
 #' @param directed A logical value indicating whether the network is directed or not. If missing is set at F
 #' @return
 #' @export
-get.input.set.color.vector <- function(nodes, raw_edges = NA, file = NA, sep = "\t", header = F, directed = F) {
+get.input.set.color.vector <- function(nodes, raw_edges = NA, file = NA, sep = " ", header = F, directed = F) {
   ####################################
   # Preprocessing of nodes and edges #
   ####################################

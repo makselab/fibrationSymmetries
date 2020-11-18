@@ -168,7 +168,7 @@ classify.block <- function(block, edges, fiberId) {
 #'
 #' @param raw_edges List of edges
 #' @param file File from which edgelist can be read (specify only one file or raw_edges)
-#' @param sep Field separator character used in read.table. If missing is set at "\\t".
+#' @param sep Field separator character used in read.table. If missing is set at " ".
 #' @param header A logical value indicating whether "file" contains the names of the variables as its first line. If missing is set at F
 #' @param outputFolder Folder to output results i.e. csv's, png's and the pdf.
 #' @param csv A logical value indicating whether building blocks need to be outputted as csv files.
@@ -176,7 +176,7 @@ classify.block <- function(block, edges, fiberId) {
 #' @param pdf A logical value indicating whether building blocks need to be put together in a pdf file.
 #' @return A list of building blocks
 #' @export
-get.building.blocks <- function(raw_edges = NA, file = NA, sep = "\t", header = F, outputFolder = NA, csv = F, png = F, pdf = F) {
+get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F, outputFolder = NA, csv = F, png = F, pdf = F) {
   if(!is.na(outputFolder)) {
     stop("csv, png and pdf outputs are currently not supported. Please check later if support has been addded.")
   }
@@ -243,7 +243,7 @@ get.building.blocks <- function(raw_edges = NA, file = NA, sep = "\t", header = 
       block$FiberId[j] = balancedColoring$Color[balancedColoring$Name == block$Node[j]]
     }
 
-    graph = igraph::graph_from_edgelist(as.matrix(raw_edges[, 1:2]), directed = directed)
+    graph = igraph::graph_from_edgelist(as.matrix(raw_edges[, 1:2]))
     graph = igraph::set_edge_attr(graph, "Weight", value = raw_edges$V3)
 
     subgraph = igraph::induced_subgraph(graph, blockGenes, impl = "auto")
