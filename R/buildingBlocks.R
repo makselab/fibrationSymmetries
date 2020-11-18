@@ -177,10 +177,10 @@ classify.block <- function(block, edges, fiberId) {
 #' @return A list of building blocks
 #' @export
 get.building.blocks <- function(raw_edges = NA, file = NA, sep = "\t", header = F, outputFolder = NA, csv = F, png = F, pdf = F) {
-  if(outputFolder != NA) {
+  if(!is.na(outputFolder)) {
     stop("csv, png and pdf outputs are currently not supported. Please check later if support has been addded.")
   }
-  if((csv != F | png != F | pdf != F) & outputFolder == NA) {
+  if((csv != F | png != F | pdf != F) & is.na(outputFolder)) {
     stop("Specify outputFolder to get csv, png or pdf file")
   }
   balancedColoring = get.balanced.coloring.Kamei(raw_edges = raw_edges, file = file, sep = sep, header = header, directed = T)
