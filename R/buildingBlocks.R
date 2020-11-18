@@ -198,6 +198,9 @@ get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F
   blocks = as.data.frame(matrix(rep("", 7 * length(nonTrivialColors)), ncol = 7), stringsAsFactors = F)
   colnames(blocks) = c("FiberId", "Nodes", "Fiber", "Regulators", "Class", "BlockName", "nl")
 
+  graph = igraph::graph_from_edgelist(as.matrix(raw_edges[, 1:2]))
+  graph = igraph::set_edge_attr(graph, "Weight", value = raw_edges$V3)
+
   for(i in 1:nrow(blocks)) {
     fiberId = nonTrivialColors[i]
     fiberGenes = balancedColoring$Name[balancedColoring$Color == fiberId]
@@ -242,9 +245,6 @@ get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F
       if(block$FiberId[j] != -1) {next}
       block$FiberId[j] = balancedColoring$Color[balancedColoring$Name == block$Node[j]]
     }
-
-    graph = igraph::graph_from_edgelist(as.matrix(raw_edges[, 1:2]))
-    graph = igraph::set_edge_attr(graph, "Weight", value = raw_edges$V3)
 
     subgraph = igraph::induced_subgraph(graph, blockGenes, impl = "auto")
 
