@@ -3,11 +3,26 @@
 using namespace Rcpp;
 
 std::vector <std::vector<int>> calculateVectors(std::vector<int> nodeColors,
-                      std::vector< std::vector<int> > vectors,
 		      std::vector< std::vector<int> > &connections,
 		      bool directed,
 		      bool weighted,
 		      int numberOfWeights) {
+	int numberOfColors = *max_element(nodeColors.begin(), nodeColors.end()) + 1;
+	int numberOfNodes = nodeColors.size();
+
+	/* Create a 2D vector array to store the matrix of input color vectors.
+	First dimension is the node id and second is color id.
+	Array needs to be of size numberOfNodes x (numberOfColors * numberOfWeights) because
+	each node has an input set color vector (see SI VI in "Circuits with broken fibration symmetries
+	perform core logic computations in biological networks. Ian Leifer, Flaviano Morone,
+	Saulo D. S. Reis, Jose´ S. Andrade Jr., Mariano Sigman, Hernan A. Makse" for the definition
+	of the ISCV) that counts how many nodes of each color send inputs of the given weight
+	to the given node. */
+	std::vector< std::vector<int> > vectors(numberOfNodes);
+	for(int i = 0; i < numberOfNodes; i++) {
+		vectors[i].resize(numberOfColors * (weighted?numberOfWeights:1));
+	}
+
 	for(int i = 0; i < connections.size(); i++) {
 		if(directed == false) {
 			int pos = 0;
@@ -87,17 +102,9 @@ std::vector<int> getBalancedColoring(std::vector<int> nodeColors, std::vector<bo
 	}
 
 	while(1) {
-		// create 2D vector array to store all vectors belonging to each node
-		/* Explanation why array is of size numberOfNodes x (numberOfColors * numberOfWeights). There are two ways how to do it.
-		Either it can be done as a 3D array and then we will need two realisations for weighted and non-weighted design.
-		Or vectors themselves can be formed in a bit weird way, but we will classify nodes comparing vectors not worrying about their structure.
-		It improves readability and simpliness only paying with the strange enumeration of array */
 		std::vector< std::vector<int> > vectors(numberOfNodes);
-		for(int i = 0; i < numberOfNodes; i++) {
-			vectors[i].resize(numberOfColors * (weighted?numberOfWeights:1));
-		}
+		vectors = calculateVectors(nodeColors, connections, directed, weighted, numberOfWeights);
 
-		vectors = calculateVectors(nodeColors, vectors, connections, directed, weighted, numberOfWeights);
 		int nOC = classifyNodes(vectors, nodeColors, directed, fixedColorNodes);
 
 		if(nOC == numberOfColors) {break;}
