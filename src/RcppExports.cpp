@@ -5,6 +5,22 @@
 
 using namespace Rcpp;
 
+// calculateVectors
+std::vector <std::vector<int>> calculateVectors(std::vector<int> nodeColors, IntegerMatrix edges, bool directed, bool weighted, int numberOfWeights, bool fromR);
+RcppExport SEXP _fibrationSymmetries_calculateVectors(SEXP nodeColorsSEXP, SEXP edgesSEXP, SEXP directedSEXP, SEXP weightedSEXP, SEXP numberOfWeightsSEXP, SEXP fromRSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<int> >::type nodeColors(nodeColorsSEXP);
+    Rcpp::traits::input_parameter< IntegerMatrix >::type edges(edgesSEXP);
+    Rcpp::traits::input_parameter< bool >::type directed(directedSEXP);
+    Rcpp::traits::input_parameter< bool >::type weighted(weightedSEXP);
+    Rcpp::traits::input_parameter< int >::type numberOfWeights(numberOfWeightsSEXP);
+    Rcpp::traits::input_parameter< bool >::type fromR(fromRSEXP);
+    rcpp_result_gen = Rcpp::wrap(calculateVectors(nodeColors, edges, directed, weighted, numberOfWeights, fromR));
+    return rcpp_result_gen;
+END_RCPP
+}
 // getBalancedColoring
 std::vector<int> getBalancedColoring(std::vector<int> nodeColors, std::vector<bool> colorFixed, IntegerMatrix edges, bool directed, bool weighted, int numberOfWeights);
 RcppExport SEXP _fibrationSymmetries_getBalancedColoring(SEXP nodeColorsSEXP, SEXP colorFixedSEXP, SEXP edgesSEXP, SEXP directedSEXP, SEXP weightedSEXP, SEXP numberOfWeightsSEXP) {
@@ -23,6 +39,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_fibrationSymmetries_calculateVectors", (DL_FUNC) &_fibrationSymmetries_calculateVectors, 6},
     {"_fibrationSymmetries_getBalancedColoring", (DL_FUNC) &_fibrationSymmetries_getBalancedColoring, 6},
     {NULL, NULL, 0}
 };

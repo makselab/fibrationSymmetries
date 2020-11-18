@@ -2,11 +2,27 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
+// [[Rcpp::export]]
 std::vector <std::vector<int>> calculateVectors(std::vector<int> nodeColors,
-		      std::vector< std::vector<int> > &connections,
+		      IntegerMatrix edges,
 		      bool directed,
 		      bool weighted,
-		      int numberOfWeights) {
+		      int numberOfWeights,
+		      bool fromR = false) {
+	if(fromR == true) {
+		// Translate nodeColors and edges from R that counts starting from 1 to C++ that counts starting from 0 if needed
+		if(*min_element(nodeColors.begin(), nodeColors.end()) == 1) {
+			for(int i = 0; i < nodeColors.size(); i++) {
+				nodeColors[i]--;
+			}
+		}
+
+		for(int i = 0; i < edges.nrow(); i++) {
+			for(int j = 0; j < (weighted?3:2); j++) {
+				edges(i, j) = edges(i, j) - 1;
+			}
+		}
+	}
 	int numberOfColors = *max_element(nodeColors.begin(), nodeColors.end()) + 1;
 	int numberOfNodes = nodeColors.size();
 
@@ -23,23 +39,23 @@ std::vector <std::vector<int>> calculateVectors(std::vector<int> nodeColors,
 		vectors[i].resize(numberOfColors * (weighted?numberOfWeights:1));
 	}
 
-	for(int i = 0; i < connections.size(); i++) {
+	for(int i = 0; i < edges.nrow(); i++) {
 		if(directed == false) {
 			int pos = 0;
 			if(numberOfWeights == 0) {
-				pos = nodeColors[connections[i][1]];
+				pos = nodeColors[edges(i, 1)];
 			} else {
-				pos = nodeColors[connections[i][1]] * numberOfWeights + connections[i][2];
+				pos = nodeColors[edges(i, 1)] * numberOfWeights + edges(i, 2);
 			}
-			vectors[connections[i][0]][pos]++;
+			vectors[edges(i, 0)][pos]++;
 		}
 		int pos = 0;
 		if(numberOfWeights == 0) {
-			pos = nodeColors[connections[i][0]];
+			pos = nodeColors[edges(i, 0)];
 		} else {
-			pos = nodeColors[connections[i][0]] * numberOfWeights + connections[i][2];
+			pos = nodeColors[edges(i, 0)] * numberOfWeights + edges(i, 2);
 		}
-		vectors[connections[i][1]][pos]++;
+		vectors[edges(i, 1)][pos]++;
 	}
 	return(vectors);
 }
@@ -78,10 +94,14 @@ std::vector<int> getBalancedColoring(std::vector<int> nodeColors, std::vector<bo
 	// Safety
 	if(weighted == false) {numberOfWeights = 0;}
 
-	int numberOfColors = *max_element(nodeColors.begin(), nodeColors.end());
-	int numberOfNodes = nodeColors.size();
+	// Adjust nodecolors and corresponding edges entries to the fact that R starts counting at 1 and C++ at 0
 	for(int i = 0; i < nodeColors.size(); i++) {
-		nodeColors[i] = nodeColors[i] - 1;
+		nodeColors[i]--;
+	}
+	for(int i = 0; i < edges.nrow(); i++) {
+		for(int j = 0; j < (weighted?3:2); j++) {
+			edges(i, j) = edges(i, j) - 1;
+		}
 	}
 
 	// Fill in nodes with the fixed color
@@ -92,24 +112,18 @@ std::vector<int> getBalancedColoring(std::vector<int> nodeColors, std::vector<bo
 		}
 	}
 
-	// create connections (that is edges)
-	std::vector <std::vector<int>> connections(edges.nrow());
-	for(int i = 0; i < connections.size(); i++) {
-		connections[i].resize(weighted?3:2);
-		for(int j = 0; j < (weighted?3:2); j++) {
-			connections[i][j] = edges(i, j) - 1;
-		}
-	}
-
+	int numberOfColors = *max_element(nodeColors.begin(), nodeColors.end());
 	while(1) {
-		std::vector< std::vector<int> > vectors(numberOfNodes);
-		vectors = calculateVectors(nodeColors, connections, directed, weighted, numberOfWeights);
+		std::vector< std::vector<int> > vectors(nodeColors.size());
+		vectors = calculateVectors(nodeColors, edges, directed, weighted, numberOfWeights);
 
 		int nOC = classifyNodes(vectors, nodeColors, directed, fixedColorNodes);
 
 		if(nOC == numberOfColors) {break;}
 		else {numberOfColors = nOC;}
 	}
+
+	// Adjust nodeColors back to R format that starts with 1, not 0
 	for(int i = 0; i < nodeColors.size(); i++) {
 		nodeColors[i]++;
 	}
