@@ -17,4 +17,5 @@ LinkingTo: Rcpp
 Imports:
 	Rcpp,
 	igraph,
-	dplyr
+	dplyr,
+	RColorBrewer

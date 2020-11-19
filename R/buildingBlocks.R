@@ -177,11 +177,14 @@ classify.block <- function(block, edges, fiberId) {
 #' @return A list of building blocks
 #' @export
 get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F, outputFolder = NA, csv = F, png = F, pdf = F) {
-  if(!is.na(outputFolder)) {
-    stop("csv, png and pdf outputs are currently not supported. Please check later if support has been addded.")
+  if((csv != F | pdf != F)) {
+    stop("csv and pdf outputs are currently not supported. Please check later if support has been addded.")
   }
   if((csv != F | png != F | pdf != F) & is.na(outputFolder)) {
     stop("Specify outputFolder to get csv, png or pdf file")
+  }
+  if(!dir.exists(outputFolder)) {
+    dir.create(outputFolder)
   }
   balancedColoring = get.balanced.coloring.Kamei(raw_edges = raw_edges, file = file, sep = sep, header = header, directed = T)
   raw_edges = get.raw.edges(raw_edges = raw_edges, file = file, sep = sep, header = header)
@@ -200,6 +203,23 @@ get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F
 
   graph = igraph::graph_from_edgelist(as.matrix(raw_edges[, 1:2]))
   graph = igraph::set_edge_attr(graph, "Weight", value = raw_edges$V3)
+
+  if(weighted & (png | pdf)) {
+    raw_edges$Color = group_indices(raw_edges, V3)
+    numberOfColors = max(raw_edges$Color)
+    if(numberOfColors < 9 & numberOfColors > 2) {
+      edgeColors = RColorBrewer::brewer.pal(numberOfColors, "Set1")
+    } else {
+      edgeColors = RColorBrewer::rainbow(numberOfColors)
+    }
+    raw_edges$Color = edgeColors[raw_edges$Color]
+
+    graph = igraph::set_edge_attr(graph, "Color", value = raw_edges$Color)
+
+    legendColors = raw_edges[!duplicated(raw_edges$Color), ]
+    legendColors$Color = factor(legendColors$Color, levels = edgeColors)
+    legendColors = dplyr::arrange(legendColors, Color)$V3
+  }
 
   for(i in 1:nrow(blocks)) {
     fiberId = nonTrivialColors[i]
@@ -228,6 +248,10 @@ get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F
       colorsToAdd = c(colorsToAdd, newColors)
     }
 
+    blocks$FiberId[i] = fiberId
+    blocks$Nodes[i] = paste(blockGenes, collapse = ", ")
+    blocks$Fiber[i] = paste(fiberGenes, collapse = ", ")
+    blocks$Regulators[i] = paste(blockGenes[!blockGenes %in% fiberGenes], collapse = ", ")
     ####################################
     ## Fibers and regulators are found #
     ####################################
@@ -251,27 +275,43 @@ get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F
     blockEdges = as.data.frame(igraph::as_edgelist(subgraph), stringsAsFactors = F)
     colnames(blockEdges) = c("Source", "Target")
     if(weighted) {
-      blockEdges$Weight <- E(subgraph)$Weight
+      blockEdges$Weight = E(subgraph)$Weight
     }
 
     for(j in 1:nrow(block)) {
-      blockEdges$SourceType[blockEdges$Source == block$Node[j]] <- block$NodeType[j]
-      blockEdges$TargetType[blockEdges$Target == block$Node[j]] <- block$NodeType[j]
+      blockEdges$SourceType[blockEdges$Source == block$Node[j]] = block$NodeType[j]
+      blockEdges$TargetType[blockEdges$Target == block$Node[j]] = block$NodeType[j]
     }
 
     blockClassification = classify.block(block = block, edges = blockEdges, fiberId)
 
+    blocks$Class[i] = blockClassification[1]
+    blocks$BlockName[i] = blockClassification[2]
+    blocks$nl[i] = blockClassification[3]
     ####################################
     #### Building blocks classified ####
     ####################################
 
-    blocks$FiberId[i] = fiberId
-    blocks$Nodes[i] = paste(blockGenes, collapse = ", ")
-    blocks$Fiber[i] = paste(fiberGenes, collapse = ", ")
-    blocks$Regulators[i] = paste(blockGenes[!blockGenes %in% fiberGenes], collapse = ", ")
-    blocks$Class[i] = blockClassification[1]
-    blocks$BlockName[i] = blockClassification[2]
-    blocks$nl[i] = blockClassification[3]
+    nodeColors = data.frame(Node = igraph::as_data_frame(subgraph, what = "vertices")$name)
+    nodeColors = merge(nodeColors, block, by = "Node")
+
+    V(subgraph)$color = group_indices(nodeColors, FiberId)
+
+    if(png | pdf) {
+      png(filename = paste0(outputFolder, "/", fiberId, ".png"), width = 640, height = 360)
+      oldMargins <- par("mar")
+      par(mar = c(0, 0, 0, 0))
+      if(!weighted) {
+        plot(subgraph)
+      } else {
+        plot(subgraph, edge.color = E(subgraph)$Color)
+        legend(x = 1.2, y = 1.1, legend = legendColors,
+               col = edgeColors, lty = 1, lwd = 3, cex = 1,
+               text.font = 4, bg = 'white')
+      }
+      par(mar = oldMargins)
+      dev.off()
+    }
   }
 
   return(blocks)
