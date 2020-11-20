@@ -292,10 +292,10 @@ get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F
     #### Building blocks classified ####
     ####################################
 
-    nodeColors = data.frame(Node = igraph::as_data_frame(subgraph, what = "vertices")$name)
-    nodeColors = merge(nodeColors, block, by = "Node")
+    block$Node = factor(block$Node, igraph::as_data_frame(subgraph, what = "vertices")$name)
+    block = arrange(block, Node)
 
-    V(subgraph)$color = group_indices(nodeColors, FiberId)
+    V(subgraph)$color = group_indices(block, FiberId)
 
     if(png | pdf) {
       png(filename = paste0(outputFolder, "/", fiberId, ".png"), width = 640, height = 360)
