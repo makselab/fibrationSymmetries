@@ -1,3 +1,12 @@
+progress <- function (x, max = 100) {
+  percent <- x / max * 100
+  cat(sprintf('\r[%-50s] %d%%',
+              paste(rep('=', percent / 2), collapse = ''),
+              floor(percent)))
+  if (x == max)
+    cat('\n')
+}
+
 get.shuffled.edges.degreeSequence <- function(raw_edges) {
   graph <- igraph::graph_from_edgelist(raw_edges)
   outDegrees <- igraph::degree(graph = graph, mode = "out", loops = T, normalized = FALSE)
@@ -84,6 +93,7 @@ get.building.block.pvalues <- function(raw_edges = NA, file = NA, sep = " ", hea
                             Trial = character(),
                             stringsAsFactors = FALSE)
   for(i in 1:sampleSize) {
+    progress(i, max = sampleSize)
     syntheticBlocks = get.building.blocks(raw_edges = get.new.edges(raw_edges, method = method))
     
     syntheticBlocks =
