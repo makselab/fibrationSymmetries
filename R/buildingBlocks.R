@@ -174,9 +174,10 @@ classify.block <- function(block, edges, fiberId) {
 #' @param csv A logical value indicating whether building blocks need to be outputted as csv files.
 #' @param png A logical value indicating whether building blocks need to be outputted as png files.
 #' @param pdf A logical value indicating whether building blocks need to be put together in a pdf file.
+#' @param progressBar A logical value indicating whether to show a progress bar.
 #' @return A list of building blocks
 #' @export
-get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F, outputFolder = NA, csv = F, png = F, pdf = F) {
+get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F, outputFolder = NA, csv = F, png = F, pdf = F, progressBar = T) {
   if((csv != F | png != F | pdf != F) & is.na(outputFolder)) {
     stop("Specify outputFolder to get csv, png or pdf files")
   }
@@ -224,7 +225,11 @@ get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F
     cat(" ", sep = " ", file = paste0(outputFolder, "/structures.Rmd"))
   }
 
+  start.time = Sys.time()
   for(i in 1:nrow(blocks)) {
+    if(progressBar == T) {
+      progress.bar(i, max = nrow(blocks), startTime = start.time, nowTime = Sys.time())
+    }
     fiberId = nonTrivialColors[i]
     fiberGenes = balancedColoring$Name[balancedColoring$Color == fiberId]
 

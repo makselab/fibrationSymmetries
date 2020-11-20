@@ -1,8 +1,11 @@
-progress <- function (x, max = 100) {
+progress.bar <- function (x, max = 100, startTime, nowTime) {
+  timePerPercent = difftime(nowTime, startTime, units ="secs") / x
   percent <- x / max * 100
-  cat(sprintf('\r[%-50s] %d%%',
+  cat(sprintf("\r[%-50s] %d%% Est time remaining: %d s",
               paste(rep('=', percent / 2), collapse = ''),
-              floor(percent)))
+              floor(percent), floor((max - x) * timePerPercent)
+              )
+      )
   if (x == max)
     cat('\n')
 }
@@ -82,7 +85,7 @@ get.building.block.pvalues <- function(raw_edges = NA, file = NA, sep = " ", hea
   }
   raw_edges = get.raw.edges(raw_edges = raw_edges, file = file, sep = sep, header = header)
   weighted = as.logical(ncol(raw_edges) - 2)
-  buildingBlocks = get.building.blocks(raw_edges = raw_edges)
+  buildingBlocks = get.building.blocks(raw_edges = raw_edges, progressBar = F)
   buildingBlocks = buildingBlocks %>%
     dplyr::group_by_at(mode) %>%
     dplyr::summarise(Count = n())
@@ -92,9 +95,11 @@ get.building.block.pvalues <- function(raw_edges = NA, file = NA, sep = " ", hea
                             Count = character(),
                             Trial = character(),
                             stringsAsFactors = FALSE)
+  
+  start.time = Sys.time()
   for(i in 1:sampleSize) {
-    progress(i, max = sampleSize)
-    syntheticBlocks = get.building.blocks(raw_edges = get.new.edges(raw_edges, method = method))
+    progress.bar(i, max = sampleSize, startTime = start.time, nowTime = Sys.time())
+    syntheticBlocks = get.building.blocks(raw_edges = get.new.edges(raw_edges, method = method), progressBar = F)
     
     syntheticBlocks =
       syntheticBlocks %>%

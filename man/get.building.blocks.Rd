@@ -12,7 +12,8 @@ get.building.blocks(
   outputFolder = NA,
   csv = F,
   png = F,
-  pdf = F
+  pdf = F,
+  progressBar = T
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ get.building.blocks(
 \item{png}{A logical value indicating whether building blocks need to be outputted as png files.}
 
 \item{pdf}{A logical value indicating whether building blocks need to be put together in a pdf file.}
+
+\item{progressBar}{A logical value indicating whether to show a progress bar.}
 }
 \value{
 A list of building blocks
