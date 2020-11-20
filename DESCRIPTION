@@ -18,4 +18,5 @@ Imports:
 	Rcpp,
 	igraph,
 	dplyr,
-	RColorBrewer
+	RColorBrewer,
+	rmarkdown

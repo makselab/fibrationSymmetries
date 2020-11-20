@@ -177,9 +177,6 @@ classify.block <- function(block, edges, fiberId) {
 #' @return A list of building blocks
 #' @export
 get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F, outputFolder = NA, csv = F, png = F, pdf = F) {
-  if((pdf != F)) {
-    stop("pdf outputs are currently not supported. Please check later if support has been addded.")
-  }
   if((csv != F | png != F | pdf != F) & is.na(outputFolder)) {
     stop("Specify outputFolder to get csv, png or pdf files")
   }
@@ -219,6 +216,10 @@ get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F
     legendColors = raw_edges[!duplicated(raw_edges$Color), ]
     legendColors$Color = factor(legendColors$Color, levels = edgeColors)
     legendColors = dplyr::arrange(legendColors, Color)$V3
+  }
+
+  if(pdf == T) {
+    cat(" ", sep = " ", file = paste0(outputFolder, "/structures.Rmd"))
   }
 
   for(i in 1:nrow(blocks)) {
@@ -323,6 +324,40 @@ get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F
       }
       par(mar = oldMargins)
       dev.off()
+
+      if(pdf == T) {
+        if(grepl("n =", blocks$nl[i])) {
+          cat(paste0("|", blocks$nl[i], "> \\"), sep = "\n",
+              file = paste0(outputFolder, "/structures.Rmd"),
+              append = T)
+        } else {
+          cat(paste0(blocks$nl[i], " \\"), sep = "\n",
+              file = paste0(outputFolder, "/structures.Rmd"),
+              append = T)
+        }
+        cat(paste0("Fiber nodes: ", blocks$Fiber[i], " \\"), sep = "\n",
+            file = paste0(outputFolder, "/structures.Rmd"),
+            append = T)
+        cat(paste0("Regulator nodes: ", blocks$Regulators[i], " \\"), sep = "\n",
+            file = paste0(outputFolder, "/structures.Rmd"),
+            append = T)
+        cat(paste0("![Alt text](", outputFolder, "/", fiberId, ".png) \\"), sep = "\n",
+            file = paste0(outputFolder, "/structures.Rmd"),
+            append = T)
+        cat("\\newpage", sep = "\n",
+            file = paste0(outputFolder, "/structures.Rmd"),
+            append = T)
+      }
+    }
+  }
+
+  if(pdf == T) {
+    rmarkdown::render(input = paste0(outputFolder, "/structures.Rmd"), output_format = rmarkdown::pdf_document())
+    file.remove(paste0(outputFolder, "/structures.Rmd"))
+    file.remove(paste0(outputFolder, "/structures.tex"))
+    if(png == F) {
+      for(fiberId in blocks$FiberId)
+        file.remove(paste0(outputFolder, "/", fiberId, ".png"))
     }
   }
 
