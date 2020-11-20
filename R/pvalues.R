@@ -1,5 +1,5 @@
-get.shuffled.edges <- function(oldEdges) {
-  graph <- igraph::graph_from_edgelist(oldEdges)
+get.shuffled.edges.degreeSequence <- function(raw_edges) {
+  graph <- igraph::graph_from_edgelist(raw_edges)
   outDegrees <- igraph::degree(graph = graph, mode = "out", loops = T, normalized = FALSE)
   outDegrees <- outDegrees[sample(igraph::vcount(graph))]
   inDegrees <- igraph::degree(graph = graph, mode = "in", loops = T, normalized = FALSE)
@@ -12,9 +12,28 @@ get.shuffled.edges <- function(oldEdges) {
   return(newEdges)
 }
 
-get.new.edges <- function(raw_edges, method = c("degreeSequence")) {
+get.shuffled.edges.erdosrenyi <- function(raw_edges) {
+  graph <- igraph::sample_gnm(n = length(unique(c(raw_edges[, 1], raw_edges[, 2]))), m = nrow(raw_edges), directed = T, loops = T)
+  newEdges <- as.data.frame(igraph::as_edgelist(graph), stringsAsFactors = F)
+  newEdges[] <- apply(newEdges, 2, as.character)
+  return(newEdges)
+}
+
+get.shuffled.edges <- function(raw_edges, method = "degreeSequence") {
+  if(method == "degreeSequence") {
+    return(get.shuffled.edges.degreeSequence(raw_edges))
+  }
+  if(method == "erdosrenyi") {
+    return(get.shuffled.edges.erdosrenyi(raw_edges))
+  }
+}
+
+get.new.edges <- function(raw_edges, method = c("degreeSequence", "erdosrenyi")) {
+  if(length(method) > 1) {
+    stop("Specify randomization method to run this function")
+  }
   if(ncol(raw_edges) == 2) {
-    newEdges <- get.shuffled.edges(raw_edges)
+    newEdges <- get.shuffled.edges(raw_edges, method = method)
   } else {
     newEdges = data.frame(V1 = character(),
                           V2 = character(),
@@ -23,7 +42,7 @@ get.new.edges <- function(raw_edges, method = c("degreeSequence")) {
     
     uniqueWeights = unique(raw_edges$V3)
     for(i in 1:length(uniqueWeights)) {
-      toAdd = get.shuffled.edges(oldEdges = as.matrix(raw_edges[raw_edges$V3 == uniqueWeights[i], 1:2]))
+      toAdd = get.shuffled.edges(raw_edges = as.matrix(raw_edges[raw_edges$V3 == uniqueWeights[i], 1:2]), method = method)
       toAdd$V3 = uniqueWeights[i]
       newEdges = rbind(newEdges, toAdd)
     }
@@ -45,9 +64,13 @@ zscore.to.pvalue <- function(x) {
 #' @param header A logical value indicating whether "file" contains the names of the variables as its first line. If missing is set at F.
 #' @param sampleSize Size of the sample on which to find p-values. Default is 10000.
 #' @param mode Which p-values need to be found: nl, class or block name.
+#' @param method Randomization method: "degreeSequence" or "erdosrenyi".
 #' @return The count of building blocks in the network, their occurence in the random network and corresponding Z-Scores and p-values.
 #' @export
-get.building.block.pvalues <- function(raw_edges = NA, file = NA, sep = " ", header = F, sampleSize = 10000, mode = c("nl", "Class", "BlockName")) {
+get.building.block.pvalues <- function(raw_edges = NA, file = NA, sep = " ", header = F, sampleSize = 10000, mode = c("nl", "Class", "BlockName"), method = c("degreeSequence", "erdosrenyi")) {
+  if(length(method) > 1) {
+    stop("Specify randomization method to run this function")
+  }
   raw_edges = get.raw.edges(raw_edges = raw_edges, file = file, sep = sep, header = header)
   weighted = as.logical(ncol(raw_edges) - 2)
   buildingBlocks = get.building.blocks(raw_edges = raw_edges)
@@ -61,7 +84,7 @@ get.building.block.pvalues <- function(raw_edges = NA, file = NA, sep = " ", hea
                             Trial = character(),
                             stringsAsFactors = FALSE)
   for(i in 1:sampleSize) {
-    syntheticBlocks = get.building.blocks(raw_edges = get.new.edges(raw_edges))
+    syntheticBlocks = get.building.blocks(raw_edges = get.new.edges(raw_edges, method = method))
     
     syntheticBlocks =
       syntheticBlocks %>%
