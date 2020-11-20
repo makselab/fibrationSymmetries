@@ -19,4 +19,5 @@ Imports:
 	igraph,
 	dplyr,
 	RColorBrewer,
-	rmarkdown
+	rmarkdown,
+	pracma
