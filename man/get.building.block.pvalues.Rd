@@ -10,7 +10,7 @@ get.building.block.pvalues(
   sep = " ",
   header = F,
   sampleSize = 10000,
-  mode = c("nl", "class", "blockName")
+  mode = c("nl", "Class", "BlockName")
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ get.building.block.pvalues(
 
 \item{sampleSize}{Size of the sample on which to find p-values. Default is 10000.}
 
-\item{mode}{Which p-values need to be found: nl (by fiber numbers), class (by class) or by block name.}
+\item{mode}{Which p-values need to be found: nl, class or block name.}
 }
 \value{
 The count of building blocks in the network, their occurence in the random network and corresponding Z-Scores and p-values.

@@ -44,21 +44,19 @@ zscore.to.pvalue <- function(x) {
 #' @param sep Field separator character used in read.table. If missing is set at " ".
 #' @param header A logical value indicating whether "file" contains the names of the variables as its first line. If missing is set at F.
 #' @param sampleSize Size of the sample on which to find p-values. Default is 10000.
-#' @param mode Which p-values need to be found: nl (by fiber numbers), class (by class) or by block name.
+#' @param mode Which p-values need to be found: nl, class or block name.
 #' @return The count of building blocks in the network, their occurence in the random network and corresponding Z-Scores and p-values.
 #' @export
-get.building.block.pvalues <- function(raw_edges = NA, file = NA, sep = " ", header = F, sampleSize = 10000, mode = c("nl", "class", "blockName")) {
-  if(mode != "nl") {
-    stop("Only nl mode is supported currently")
-  }
+get.building.block.pvalues <- function(raw_edges = NA, file = NA, sep = " ", header = F, sampleSize = 10000, mode = c("nl", "Class", "BlockName")) {
   raw_edges = get.raw.edges(raw_edges = raw_edges, file = file, sep = sep, header = header)
   weighted = as.logical(ncol(raw_edges) - 2)
   buildingBlocks = get.building.blocks(raw_edges = raw_edges)
   buildingBlocks = buildingBlocks %>%
-    dplyr::group_by(nl) %>%
+    dplyr::group_by_at(mode) %>%
     dplyr::summarise(Count = n())
+  colnames(buildingBlocks)[1] = "Mode"
   
-  modelSummary = data.frame(nl = character(),
+  modelSummary = data.frame(Mode = character(),
                             Count = character(),
                             Trial = character(),
                             stringsAsFactors = FALSE)
@@ -67,27 +65,30 @@ get.building.block.pvalues <- function(raw_edges = NA, file = NA, sep = " ", hea
     
     syntheticBlocks =
       syntheticBlocks %>%
-      dplyr::group_by(nl) %>%
+      dplyr::group_by_at(mode) %>%
       dplyr::summarise(Count = n())
+    colnames(syntheticBlocks)[1] = "Mode"
     
     syntheticBlocks$Trial = i
     
     modelSummary = rbind(modelSummary, syntheticBlocks)
   }
   
-  modelSummary = tidyr::spread(modelSummary, key = nl, value = Count)
+  modelSummary = tidyr::spread(modelSummary, key = Mode, value = Count)
   modelSummary[is.na(modelSummary)] = 0
   
   modelSummary =
-    data.frame(nl = colnames(modelSummary[, -1]),
+    data.frame(Mode = colnames(modelSummary[, -1]),
                MeanRandom = apply(modelSummary[, -1], 2, mean),
                SDRandom = apply(modelSummary[, -1], 2, sd))
   
-  buildingBlocks = merge(buildingBlocks, modelSummary, by = "nl", all.x = T)
+  buildingBlocks = merge(buildingBlocks, modelSummary, by = "Mode", all.x = T)
   buildingBlocks[is.na(buildingBlocks)] = 0
   
   buildingBlocks$ZScore = round((buildingBlocks$Count - buildingBlocks$MeanRandom) / buildingBlocks$SDRandom, digits = 3)
   buildingBlocks$PValue = round(zscore.to.pvalue(buildingBlocks$ZScore), digits = 3)
+  
+  colnames(buildingBlocks)[1] = mode
   
   return(buildingBlocks)
 }
