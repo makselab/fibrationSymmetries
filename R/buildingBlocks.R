@@ -177,11 +177,11 @@ classify.block <- function(block, edges, fiberId) {
 #' @return A list of building blocks
 #' @export
 get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F, outputFolder = NA, csv = F, png = F, pdf = F) {
-  if((csv != F | pdf != F)) {
-    stop("csv and pdf outputs are currently not supported. Please check later if support has been addded.")
+  if((pdf != F)) {
+    stop("pdf outputs are currently not supported. Please check later if support has been addded.")
   }
   if((csv != F | png != F | pdf != F) & is.na(outputFolder)) {
-    stop("Specify outputFolder to get csv, png or pdf file")
+    stop("Specify outputFolder to get csv, png or pdf files")
   }
   if(!dir.exists(outputFolder)) {
     dir.create(outputFolder)
@@ -291,13 +291,25 @@ get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F
     ####################################
     #### Building blocks classified ####
     ####################################
-
-    block$Node = factor(block$Node, igraph::as_data_frame(subgraph, what = "vertices")$name)
-    block = arrange(block, Node)
-
-    V(subgraph)$color = group_indices(block, FiberId)
+    if(csv) {
+      outputBlock = block
+      colnames(outputBlock)[1] = "Label"
+      outputBlock$Id = outputBlock$Label
+      outputBlock <- outputBlock[, c("Id", "Label", "FiberId")]
+      write.csv(outputBlock, file = paste0(outputFolder, "/", fiberId, "_nodes.csv"), quote = F, row.names = F)
+      outputEdges = blockEdges
+      colnames(outputEdges)[4:5] = c("Type", "Color")
+      outputEdges$Type = "directed"
+      outputEdges$Color = E(subgraph)$Color
+      write.csv(outputEdges, file = paste0(outputFolder, "/", fiberId, "_edges.csv"), quote = F, row.names = F)
+    }
 
     if(png | pdf) {
+      block$Node = factor(block$Node, igraph::as_data_frame(subgraph, what = "vertices")$name)
+      block = arrange(block, Node)
+
+      V(subgraph)$color = group_indices(block, FiberId)
+
       png(filename = paste0(outputFolder, "/", fiberId, ".png"), width = 640, height = 360)
       oldMargins <- par("mar")
       par(mar = c(0, 0, 0, 0))
