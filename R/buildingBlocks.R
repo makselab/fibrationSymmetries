@@ -180,8 +180,10 @@ get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F
   if((csv != F | png != F | pdf != F) & is.na(outputFolder)) {
     stop("Specify outputFolder to get csv, png or pdf files")
   }
-  if(!dir.exists(outputFolder)) {
-    dir.create(outputFolder)
+  if(!is.na(outputFolder)) {
+    if(!dir.exists(outputFolder)) {
+      dir.create(outputFolder)
+    }
   }
   balancedColoring = get.balanced.coloring.Kamei(raw_edges = raw_edges, file = file, sep = sep, header = header, directed = T)
   raw_edges = get.raw.edges(raw_edges = raw_edges, file = file, sep = sep, header = header)
