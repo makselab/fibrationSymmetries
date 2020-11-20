@@ -1,5 +1,5 @@
 get.raw.edges <- function(raw_edges, file, sep, header) {
-  if(!is.na(file) & !is.na(raw_edges)) {
+  if(!is.na(file) & first(!is.na(raw_edges))) {
     stop("Both raw_edges and file are specified, specify only one")
   }
 
