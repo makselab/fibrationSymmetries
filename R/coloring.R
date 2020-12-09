@@ -45,6 +45,8 @@ get.balanced.coloring.Kamei <- function(raw_edges = NA, file = NA, sep = " ", he
   integer.nodes$Id = 1:nrow(integer.nodes)
   colnames(integer.nodes)[1] = "Name"
   integer.nodes = integer.nodes[, c("Id", "Name")]
+  integer.nodes$Color = 1
+  integer.nodes$Fixed = 0
 
   integer.edges = data.frame(igraph::as_edgelist(graph, names = F), stringsAsFactors = F)
   colnames(integer.edges) = c("Source", "Target")
@@ -58,10 +60,7 @@ get.balanced.coloring.Kamei <- function(raw_edges = NA, file = NA, sep = " ", he
   ####### End of preprocessing #######
   ####################################
 
-  integer.nodes$Color = 1
-
   no.input.nodes = NULL
-  integer.nodes$Fixed = 0
   if(directed == T & look.for.no.input.nodes == T) {
     initial.colors <- (1:nrow(integer.nodes))[!1:nrow(integer.nodes) %in% unique(dplyr::filter(integer.edges, Source != Target)[, 2])]
     no.input.nodes <- (1:nrow(integer.nodes))[!1:nrow(integer.nodes) %in% unique(integer.edges[, 2])]
