@@ -1,5 +1,5 @@
 get.raw.edges <- function(raw_edges, file, sep, header) {
-  if(!is.na(file) & first(!is.na(raw_edges))) {
+  if(!is.na(file) & dplyr::first(!is.na(raw_edges))) {
     stop("Both raw_edges and file are specified, specify only one")
   }
 
@@ -61,11 +61,11 @@ get.balanced.coloring.Kamei <- function(raw_edges = NA, file = NA, sep = " ", he
   integer.nodes$Color = 1
 
   no.input.nodes = NULL
+  integer.nodes$Fixed = 0
   if(directed == T & look.for.no.input.nodes == T) {
     initial.colors <- (1:nrow(integer.nodes))[!1:nrow(integer.nodes) %in% unique(dplyr::filter(integer.edges, Source != Target)[, 2])]
     no.input.nodes <- (1:nrow(integer.nodes))[!1:nrow(integer.nodes) %in% unique(integer.edges[, 2])]
     integer.nodes$Color[initial.colors] <- 2:(length(initial.colors) + 1)
-    integer.nodes$Fixed = 0
     if(length(no.input.nodes) != 0) {
       integer.nodes$Fixed[no.input.nodes] <- 1
     }
