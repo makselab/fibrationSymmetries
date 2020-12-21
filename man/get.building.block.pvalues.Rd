@@ -2,7 +2,7 @@
 % Please edit documentation in R/pvalues.R
 \name{get.building.block.pvalues}
 \alias{get.building.block.pvalues}
-\title{Find fibration building blocks and their p-values}
+\title{Get p-values corresponding to fiber building blocks.}
 \usage{
 get.building.block.pvalues(
   raw_edges = NA,
@@ -11,27 +11,34 @@ get.building.block.pvalues(
   header = F,
   sampleSize = 10000,
   mode = c("nl", "Class", "BlockName"),
-  method = c("degreeSequence", "erdosrenyi")
+  method = c("degreeSequence", "erdosrenyi"),
+  progressBar = T
 )
 }
 \arguments{
-\item{raw_edges}{List of edges}
+\item{raw_edges}{2 or 3 column data frame specifying the list of edges (specify only one file or raw_edges)}
 
-\item{file}{File from which edgelist can be read (specify only one file or raw_edges)}
+\item{file}{Path to the file with the edgelist. Make sure to specify "sep" (if different from " ") and "header" (if different from FALSE) to be passed to the read.table function.}
 
-\item{sep}{Field separator character used in read.table. If missing is set at " ".}
+\item{sep}{To be used with the "file" variable. Defines the field separator character to be used in the read.table() function. Is set with " " by default.}
 
-\item{header}{A logical value indicating whether "file" contains the names of the variables as its first line. If missing is set at F.}
+\item{header}{To be used with the "file" variable. A logical value indicating whether "file" contains the names of the variables as its first line. Is set as FALSE by default.}
 
 \item{sampleSize}{Size of the sample on which to find p-values. Default is 10000.}
 
 \item{mode}{Which p-values need to be found: nl, class or block name.}
 
 \item{method}{Randomization method: "degreeSequence" or "erdosrenyi".}
+
+\item{progressBar}{A logical value indicating whether to show the progress bar.}
 }
 \value{
 The count of building blocks in the network, their occurence in the random network and corresponding Z-Scores and p-values.
 }
 \description{
-This function finds fibration building blocks Specify only one file or raw_edges.
+get.building.block.pvalues() function finds fiber building block p-values.
+That is, the probability (estimated on the sample of the size "sampleSize") of having the number of building blocks
+in the graph (specified using "raw_edges", "file", "sep" and "header" variables)
+with the certain fiber numbers or belonging to the certain class or having the certain block name (depending on the "mode" variable)
+in the random network (with the same degree sequence or created by Erdos-Renyi depending on "method" variable).
 }

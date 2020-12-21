@@ -2,7 +2,7 @@
 % Please edit documentation in R/buildingBlocks.R
 \name{get.building.blocks}
 \alias{get.building.blocks}
-\title{Find fibration building blocks}
+\title{Get fiber building blocks classification and/or figures and raw data.}
 \usage{
 get.building.blocks(
   raw_edges = NA,
@@ -17,27 +17,38 @@ get.building.blocks(
 )
 }
 \arguments{
-\item{raw_edges}{List of edges}
+\item{raw_edges}{2 or 3 column data frame specifying the list of edges (specify only one file or raw_edges)}
 
-\item{file}{File from which edgelist can be read (specify only one file or raw_edges)}
+\item{file}{Path to the file with the edgelist. Make sure to specify "sep" (if different from " ") and "header" (if different from FALSE) to be passed to the read.table function.}
 
-\item{sep}{Field separator character used in read.table. If missing is set at " ".}
+\item{sep}{To be used with the "file" variable. Defines the field separator character to be used in the read.table() function. Is set with " " by default.}
 
-\item{header}{A logical value indicating whether "file" contains the names of the variables as its first line. If missing is set at F}
+\item{header}{To be used with the "file" variable. A logical value indicating whether "file" contains the names of the variables as its first line. Is set as FALSE by default.}
 
-\item{outputFolder}{Folder to output results i.e. csv's, png's and the pdf.}
+\item{outputFolder}{Path to output csv, png or pdf files in. Will be created if doesn't exist.}
 
-\item{csv}{A logical value indicating whether building blocks need to be outputted as csv files.}
+\item{csv}{A logical value indicating whether building blocks node and edge csv files need to be written to the outputFolder.}
 
-\item{png}{A logical value indicating whether building blocks need to be outputted as png files.}
+\item{png}{A logical value indicating whether illustrations of the building blocks need to be outputted as png files in the outputFolder.}
 
-\item{pdf}{A logical value indicating whether building blocks need to be put together in a pdf file.}
+\item{pdf}{A logical value indicating whether the summary of the building blocks including figures, classification and node names needs to be put in the pdf file "structures.pdf" in the output folder.}
 
-\item{progressBar}{A logical value indicating whether to show a progress bar.}
+\item{progressBar}{A logical value indicating whether to show the progress bar.}
 }
 \value{
-A list of building blocks
+A dataframe that includes:
+FiberId (the color id corresponding to the output of the get.balanced.coloring.Kamei() function),
+Nodes (list of nodes in the fiber building block),
+Fiber (list of nodes in the fiber),
+Regulators (list of regulator nodes),
+Class (Classification corresponding to the block name),
+BlockName (Block name),
+nl (|n,l> classification of the block).
 }
 \description{
-This function finds fibration building blocks Specify only one file or raw_edges.
+get.building.blocks() is used to get fiber building block classification and/or figures and raw data.
+Returns the list of fiber building blocks as defined in (1) that correspond to the network specified using "raw_edges", "file", "sep" and "header" variables.
+Classification is returned by default. Classification is obtained following the block diagram specified in "blockClassification.xml" file in the package folder.
+To get additional output specify "outputFolder" variable and "csv", "png" or "pdf" variables.
+(1) Morone F, Leifer I, Makse HA. Fibration symmetries uncover the building blocks of biological networks. Proc Natl Acad Sci USA. 2020;117(15):83068314.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/coloring.R
 \name{get.input.set.color.vector}
 \alias{get.input.set.color.vector}
-\title{Find the input set color vector given the coloring}
+\title{Find the ISCV (Input Set Color Vector) of all nodes in the graph given the coloring.}
 \usage{
 get.input.set.color.vector(
   nodes,
@@ -14,21 +14,24 @@ get.input.set.color.vector(
 )
 }
 \arguments{
-\item{nodes}{dataframe with 2 columns: Name, Color.}
+\item{nodes}{Variable is formatted as the output of the get.balanced.coloring.Kamei() function. Dataframe with 2 columns: Name, Color.}
 
-\item{raw_edges}{List of edges}
+\item{raw_edges}{2 or 3 column data frame specifying the list of edges (specify only one file or raw_edges)}
 
-\item{file}{File from which edgelist can be read (specify only one file or raw_edges)}
+\item{file}{Path to the file with the edgelist. Make sure to specify "sep" (if different from " ") and "header" (if different from FALSE) to be passed to the read.table function.}
 
-\item{sep}{Field separator character used in read.table. If missing is set at " ".}
+\item{sep}{To be used with the "file" variable. Defines the field separator character to be used in the read.table() function. Is set with " " by default.}
 
-\item{header}{A logical value indicating whether "file" contains the names of the variables as its first line. If missing is set at F}
+\item{header}{To be used with the "file" variable. A logical value indicating whether "file" contains the names of the variables as its first line. Is set as FALSE by default.}
 
-\item{directed}{A logical value indicating whether the network is directed or not. If missing is set at F}
+\item{directed}{A logical value indicating whether the network is directed or not. Is set as FALSE by default.}
 }
 \value{
 
 }
 \description{
-This function finds the input set color vector given the coloring. Note, can be undirected
+The get.input.set.color.vector() function finds ISCVs (Input Set Color Vectors as defined in SI VI of (1)) of all nodes in the graph given the coloring of the graph.
+Coloring is specified by "nodes" variable formatted as the output of the get.balanced.coloring.Kamei() function.
+Input graph is specified using "raw_edges", "file", "sep" and "header" variables.
+(1) Leifer I, Morone F, Reis SDS, Andrade JS, Sigman M, Makse HA. Circuits with broken fibration symmetries perform core logic computations in biological networks. PLoS Comput Biol 2020;16(6):e1007776.
 }
