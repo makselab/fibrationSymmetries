@@ -1,6 +1,6 @@
 # Functions to work with fibration symmetries.
 
-**Ian Leifer, Levich Institute and Physics Department, City College of New York, New York, NY 10031**
+Author: **Ian Leifer, Levich Institute and Physics Department, City College of New York, New York, NY 10031**
 
 ## Installation
 
