@@ -23,7 +23,7 @@ get.building.blocks()	Get fiber building blocks classification and/or figures an
 
 ```xml
 <myxml>
-   <someElement />  
+   <blockClassification.xml />  
 </myxml>
 ```
 
