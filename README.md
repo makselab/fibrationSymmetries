@@ -1,5 +1,7 @@
 # Functions to work with fibration symmetries.
 
+**Ian Leifer, Levich Institute and Physics Department, City College of New York, New York, NY 10031**
+
 ## Installation
 
 ```r
@@ -103,3 +105,7 @@ nodes = get.balanced.coloring.Kamei(file = "Network.txt", directed = T)
 ISCVs = get.input.set.color.vector(nodes = nodes, file = file, directed = T)
 ISCVs
 ```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
