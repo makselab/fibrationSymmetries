@@ -21,7 +21,7 @@ get.input.set.color.vector()	Find the ISCV (Input Set Color Vector) of all nodes
 
 get.building.blocks()	Get fiber building blocks classification and/or figures and raw data.
 
-![Alt text here](blockClassification.xml)
+![Block diagram](blockClassification.png)
 
 get.building.block.pvalues()	Get p-values corresponding to fiber building blocks.
 
