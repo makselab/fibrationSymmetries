@@ -372,7 +372,6 @@ get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F
   if(pdf == T) {
     rmarkdown::render(input = paste0(outputFolder, "/structures.Rmd"), output_format = rmarkdown::pdf_document())
     file.remove(paste0(outputFolder, "/structures.Rmd"))
-    file.remove(paste0(outputFolder, "/structures.tex"))
     if(png == F) {
       for(fiberId in blocks$FiberId)
         file.remove(paste0(outputFolder, "/", fiberId, ".png"))
