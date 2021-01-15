@@ -1,6 +1,6 @@
 # Functions to work with fibration symmetries.
 
-**Ian Leifer, Levich Institute and Physics Department, City College of New York, New York, NY 10031**
+Author: **Ian Leifer, Levich Institute and Physics Department, City College of New York, New York, NY 10031**
 
 ## Installation
 
@@ -108,4 +108,4 @@ ISCVs
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License.
