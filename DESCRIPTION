@@ -1,6 +1,6 @@
 Package: fibrationSymmetries
 Title: Functions to work with fibration symmetries
-Version: 1.0
+Version: 1.1
 Authors@R: 
     person(given = "Ian",
            family = "Leifer",
