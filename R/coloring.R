@@ -7,13 +7,16 @@ get.raw.edges <- function(raw_edges, file, sep, header) {
     if(is.na(raw_edges)) {
       raw_edges <- read.table(file = file, sep = sep, header = header, stringsAsFactors = F, quote = "")
       if(ncol(raw_edges) < 2) {stop("File contains less than 2 columns, check that \"sep\" value is right")}
+      if(header == T) {
+        colnames(raw_edges) = paste0("V", 1:ncol(raw_edges))
+      }
     } else {
       stop("No file or edgelist specified, please see manual for usage")
     }
   } else {
     raw_edges[] <- apply(raw_edges, 2, as.character)
   }
-
+  
   return(raw_edges)
 }
 

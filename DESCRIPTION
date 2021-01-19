@@ -20,4 +20,5 @@ Imports:
 	dplyr,
 	RColorBrewer,
 	rmarkdown,
-	pracma
+	pracma,
+	grDevices

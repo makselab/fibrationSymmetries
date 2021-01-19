@@ -221,7 +221,7 @@ get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F
     if(numberOfColors < 9 & numberOfColors > 2) {
       edgeColors = RColorBrewer::brewer.pal(numberOfColors, "Set1")
     } else {
-      edgeColors = RColorBrewer::rainbow(numberOfColors)
+      edgeColors = grDevices::rainbow(numberOfColors)
     }
     raw_edges$Color = edgeColors[raw_edges$Color]
 
