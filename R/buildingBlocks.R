@@ -204,7 +204,7 @@ get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F
   nonTrivialColors = as.matrix(
     balancedColoring %>%
       dplyr::group_by(Color) %>%
-      dplyr::summarise(FiberSize = n()) %>%
+      dplyr::summarise(FiberSize = dplyr::n()) %>%
       dplyr::filter(FiberSize > 1) %>%
       dplyr::select(Color)
   )
