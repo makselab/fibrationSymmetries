@@ -94,7 +94,7 @@ get.building.block.pvalues <- function(raw_edges = NA, file = NA, sep = " ", hea
   buildingBlocks = get.building.blocks(raw_edges = raw_edges, progressBar = F)
   buildingBlocks = buildingBlocks %>%
     dplyr::group_by_at(mode) %>%
-    dplyr::summarise(Count = n())
+    dplyr::summarise(Count = dplyr::n())
   colnames(buildingBlocks)[1] = "Mode"
   
   modelSummary = data.frame(Mode = character(),
@@ -112,7 +112,7 @@ get.building.block.pvalues <- function(raw_edges = NA, file = NA, sep = " ", hea
     syntheticBlocks =
       syntheticBlocks %>%
       dplyr::group_by_at(mode) %>%
-      dplyr::summarise(Count = n())
+      dplyr::summarise(Count = dplyr::n())
     colnames(syntheticBlocks)[1] = "Mode"
     
     syntheticBlocks$Trial = i

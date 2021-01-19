@@ -35,7 +35,7 @@ fiberHasOneInput <- function(edges) {
   NumberOfInputs <- edges %>%
     dplyr::filter(TargetType == "Fiber") %>%
     dplyr::group_by(Target) %>%
-    dplyr::summarise(NumberOfInputs = n()) %>%
+    dplyr::summarise(NumberOfInputs = dplyr::n()) %>%
     dplyr::ungroup() %>%
     dplyr::summarise(NumberOfInputs = first(NumberOfInputs))
   return(NumberOfInputs$NumberOfInputs[1] == 1)
@@ -46,7 +46,7 @@ isOneNodeFromFiberRegulator <- function(edges) {
     dplyr::filter(SourceType == "Fiber") %>%
     dplyr::filter(TargetType == "Fiber") %>%
     dplyr::group_by(Target) %>%
-    dplyr::summarise(NumberOfInputs = n()) %>%
+    dplyr::summarise(NumberOfInputs = dplyr::n()) %>%
     dplyr::ungroup() %>%
     dplyr::summarise(NumberOfInputs = first(NumberOfInputs))
   return(numberOfFiberInputs$NumberOfInputs == 1)
@@ -57,11 +57,11 @@ chainCondition <- function(block, edges) {
   for(i in 1:nrow(block)) {
     numberOfOutputs <- edges %>%
       dplyr::filter(Source == block$Node[i]) %>%
-      dplyr::summarise(NumberOfOutputs = n())
+      dplyr::summarise(NumberOfOutputs = dplyr::n())
 
     numberOfInputs <- edges %>%
       dplyr::filter(Target == block$Node[i]) %>%
-      dplyr::summarise(NumberOfInputs = n())
+      dplyr::summarise(NumberOfInputs = dplyr::n())
 
     block$NumberOfOutputs[i] <- numberOfOutputs$NumberOfOutputs[1]
     block$NumberOfInputs[i] <- numberOfInputs$NumberOfInputs[1]
@@ -80,7 +80,7 @@ chainCondition <- function(block, edges) {
 allSameInput <- function(edges) {
   sources <- edges %>%
     dplyr::group_by(Source) %>%
-    dplyr::summarise(N = n())
+    dplyr::summarise(N = dplyr::n())
   return(nrow(sources) == 1)
 }
 
