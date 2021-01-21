@@ -1,3 +1,5 @@
+#' @importFrom magrittr "%>%"
+
 isOnlyMainFiber <- function(block, fiberId) {
   regulatorIds <- block[block$FiberId != fiberId, "FiberId"]
   return(anyDuplicated(regulatorIds) == 0)
@@ -19,7 +21,7 @@ isSizeOfInputSetOne <- function(block, edges) {
   fiberNode <- block %>%
     dplyr::filter(NodeType == "Fiber") %>%
     dplyr::select(Node) %>%
-    dplyr::summarise(Node = first(Node))
+    dplyr::summarise(Node = dplyr::first(Node))
   fiberNode <- as.character(fiberNode)
   return(length(edges[edges$Target == fiberNode, "Source"]) == 1)
 }
@@ -37,7 +39,7 @@ fiberHasOneInput <- function(edges) {
     dplyr::group_by(Target) %>%
     dplyr::summarise(NumberOfInputs = dplyr::n()) %>%
     dplyr::ungroup() %>%
-    dplyr::summarise(NumberOfInputs = first(NumberOfInputs))
+    dplyr::summarise(NumberOfInputs = dplyr::first(NumberOfInputs))
   return(NumberOfInputs$NumberOfInputs[1] == 1)
 }
 
@@ -48,7 +50,7 @@ isOneNodeFromFiberRegulator <- function(edges) {
     dplyr::group_by(Target) %>%
     dplyr::summarise(NumberOfInputs = dplyr::n()) %>%
     dplyr::ungroup() %>%
-    dplyr::summarise(NumberOfInputs = first(NumberOfInputs))
+    dplyr::summarise(NumberOfInputs = dplyr::first(NumberOfInputs))
   return(numberOfFiberInputs$NumberOfInputs == 1)
 }
 
@@ -216,7 +218,7 @@ get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F
   graph = igraph::set_edge_attr(graph, "Weight", value = raw_edges$V3)
 
   if(weighted & (png | pdf)) {
-    raw_edges$Color = group_indices(raw_edges, V3)
+    raw_edges$Color = dplyr::group_indices(raw_edges, V3)
     numberOfColors = max(raw_edges$Color)
     if(numberOfColors < 9 & numberOfColors > 2) {
       edgeColors = RColorBrewer::brewer.pal(numberOfColors, "Set1")
@@ -294,7 +296,7 @@ get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F
     blockEdges = as.data.frame(igraph::as_edgelist(subgraph), stringsAsFactors = F)
     colnames(blockEdges) = c("Source", "Target")
     if(weighted) {
-      blockEdges$Weight = E(subgraph)$Weight
+      blockEdges$Weight = igraph::E(subgraph)$Weight
     }
 
     for(j in 1:nrow(block)) {
@@ -319,15 +321,15 @@ get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F
       outputEdges = blockEdges
       colnames(outputEdges)[4:5] = c("Type", "Color")
       outputEdges$Type = "directed"
-      outputEdges$Color = E(subgraph)$Color
+      outputEdges$Color = igraph::E(subgraph)$Color
       write.csv(outputEdges, file = paste0(outputFolder, "/", fiberId, "_edges.csv"), quote = F, row.names = F)
     }
 
     if(png | pdf) {
       block$Node = factor(block$Node, igraph::as_data_frame(subgraph, what = "vertices")$name)
-      block = arrange(block, Node)
+      block = dplyr::arrange(block, Node)
 
-      V(subgraph)$color = group_indices(block, FiberId)
+      igraph::V(subgraph)$color = dplyr::group_indices(block, FiberId)
 
       png(filename = paste0(outputFolder, "/", fiberId, ".png"), width = 640, height = 360)
       oldMargins <- par("mar")
@@ -335,7 +337,7 @@ get.building.blocks <- function(raw_edges = NA, file = NA, sep = " ", header = F
       if(!weighted) {
         plot(subgraph)
       } else {
-        plot(subgraph, edge.color = E(subgraph)$Color)
+        plot(subgraph, edge.color = igraph::E(subgraph)$Color)
         legend(x = 1.2, y = 1.1, legend = legendColors,
                col = edgeColors, lty = 1, lwd = 3, cex = 1,
                text.font = 4, bg = 'white')
