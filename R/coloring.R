@@ -100,7 +100,7 @@ get.balanced.coloring.Kamei <- function(raw_edges = NA, file = NA, sep = " ", he
 #' @param sep To be used with the "file" variable. Defines the field separator character to be used in the read.table() function. Is set with " " by default.
 #' @param header To be used with the "file" variable. A logical value indicating whether "file" contains the names of the variables as its first line. Is set as FALSE by default.
 #' @param directed A logical value indicating whether the network is directed or not. Is set as FALSE by default.
-#' @return
+#' @return A dataframe each column of which is an ISCV of each node of the graph.
 #' @export
 get.input.set.color.vector <- function(nodes, raw_edges = NA, file = NA, sep = " ", header = F, directed = F) {
   ####################################
