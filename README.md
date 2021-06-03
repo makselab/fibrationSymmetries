@@ -1,12 +1,13 @@
 # Functions to work with fibration symmetries.
 
 Author: **Ian Leifer, Levich Institute and Physics Department, City College of New York, New York, NY 10031**
+Advisor: **Hernan Makse, Levich Institute and Physics Department, City College of New York, New York, NY 10031**
 
 ## Installation
 
 ```r
 # Install the package from the GitHub directly in RStudio by running:
-devtools::install_github("ianleifer/fibrationSymmetries")
+devtools::install_github("makselab/fibrationSymmetries")
 ```
 
 ## Usage
