@@ -4,7 +4,7 @@ Author: **Ian Leifer, Levich Institute and Physics Department, City College of N
 
 Advisor: **Hernan Makse, Levich Institute and Physics Department, City College of New York, New York, NY 10031**
 
-For all the questions email ianleifer93@gmail.com
+Contact ianleifer93@gmail.com with any questions, concerns or bug reports.
 
 ## Installation
 
