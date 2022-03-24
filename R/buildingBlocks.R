@@ -71,7 +71,8 @@ chainCondition <- function(block, edges) {
   loopbackNode <- edges %>%
     dplyr::filter(Source == Target)
   loopbackNode <- loopbackNode$Source[1]
-
+  if(is.na(loopbackNode)) {return(F)}
+  
   loopTwoOutputs <- block[block$Node == loopbackNode, "NumberOfOutputs"] == 2
   oneNoOutputNode <- nrow(block[block$NumberOfOutputs == 0, ]) == 1
   otherNodesOneOne <- (nrow(block[(block$NumberOfOutputs != 0) & (block$NumberOfOutputs != 2), ]) == nrow(block) - 2)
