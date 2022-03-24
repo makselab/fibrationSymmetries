@@ -2,11 +2,13 @@
 
 Author: **Ian Leifer, Levich Institute and Physics Department, City College of New York, New York, NY 10031**
 
+Advisor: **Hernan Makse, Levich Institute and Physics Department, City College of New York, New York, NY 10031**
+
 ## Installation
 
 ```r
 # Install the package from the GitHub directly in RStudio by running:
-devtools::install_github("ianleifer/fibrationSymmetries")
+devtools::install_github("makselab/fibrationSymmetries")
 ```
 
 ## Usage
@@ -128,7 +130,7 @@ buildingBlockPvalues
 ### Get ISCV (Input Set Color Vector)
 **get.input.set.color.vector(nodes, raw_edges = NA, file = NA, sep = " ", header = F, directed = F)** finds the ISCV (Input Set Color Vector as defined in (1)) of all nodes in the graph given the coloring. Coloring is specified by "nodes" variable formatted as the output of the get.balanced.coloring.Kamei() function. Input graph is specified using "raw_edges", "file", "sep" and "header" variables. **Note, works for both directed and undirected networks.**
 
-#' @param nodes Variable is formatted as the output of the get.balanced.coloring.Kamei() function. Dataframe with 2 columns: Name, Color.
+- **nodes** -- Dataframe with 2 columns: Name, Color. Variable is formatted as the output of the get.balanced.coloring.Kamei() function.
 - **raw_edges** -- 2 or 3 column data frame specifying the list of edges (specify only one file or raw_edges)
 - **file** -- Path to the file with the edgelist. Make sure to specify "sep" (if different from " ") and "header" (if different from FALSE) to be passed to the read.table function.
 - **sep** -- To be used with the "file" variable. Defines the field separator character to be used in the read.table() function. Is set with " " by default.
